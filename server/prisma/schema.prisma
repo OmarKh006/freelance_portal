@@ -11,3 +11,49 @@ generator client {
 datasource db {
   provider = "postgresql"
 }
+
+model User {
+  id Int @id @default(autoincrement())
+  email String @unique
+  name String
+  role Role @default(CLIENT)
+  projects Project[]
+  isIDVerified Boolean @default(false)
+  isPaymentVerified Boolean @default(false)
+  rating Int @default(0)
+  profile Profile?
+}
+
+model Profile {
+  id Int @id @default(autoincrement())
+  user User @relation(fields: [userID], references: [id])
+  userID Int @unique
+  bio String
+}
+
+model Project {
+  id Int @id @default(autoincrement())
+  client User @relation(fields: [clientID], references: [id])
+  clientID Int
+  projectType ProjectType?
+  tasks Task[]
+}
+
+model Task {
+  id Int @id @default(autoincrement())
+  task Project @relation(fields: [projectID], references: [id])
+  projectID Int
+  startDate DateTime @default(now())
+  dueDate DateTime
+  taskPayment Float
+}
+
+enum Role {
+  CLIENT
+  FREELANCER
+}
+
+enum ProjectType {
+  ONE_TIME
+  MILESTONES
+}
