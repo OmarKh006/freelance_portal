@@ -22,6 +22,7 @@ model User {
   isPaymentVerified Boolean   @default(false)
   rating            Int       @default(0)
   profile           Profile?
+  messages          Message[]
 }
 
 model Profile {
@@ -38,6 +39,9 @@ model Project {
   projectType ProjectType?
   tasks       Task[]
   invoices    Invoice[]
+  messages    Message[]
+  files       File[]
+  createdAt   DateTime     @default(now())
 }
 
 model Task {
@@ -57,6 +61,25 @@ model Invoice {
   serviceID Int
   amount    Float
   state     InvoiceState
+}
+
+model Message {
+  id        Int      @id @default(autoincrement())
+  project   Project  @relation(fields: [projectID], references: [id])
+  user      User     @relation(fields: [senderID], references: [id])
+  senderID  Int
+  projectID Int
+  content   String
+  createdAt DateTime @default(now())
+}
+
+model File {
+  id        Int      @id @default(autoincrement())
+  project   Project  @relation(fields: [projectID], references: [id])
+  projectID Int
+  url       String
+  name      String
+  createdAt DateTime @default(now())
 }
 
 enum Role {
