@@ -21,15 +21,7 @@ model User {
   isIDVerified      Boolean   @default(false)
   isPaymentVerified Boolean   @default(false)
   rating            Int       @default(0)
-  profile           Profile?
   messages          Message[]
-}
-
-model Profile {
-  id     Int    @id @default(autoincrement())
-  user   User   @relation(fields: [userID], references: [id])
-  userID Int    @unique
-  bio    String
 }
 
 model Project {
