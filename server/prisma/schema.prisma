@@ -13,39 +13,50 @@ datasource db {
 }
 
 model User {
-  id Int @id @default(autoincrement())
-  email String @unique
-  name String
-  role Role @default(CLIENT)
-  projects Project[]
-  isIDVerified Boolean @default(false)
-  isPaymentVerified Boolean @default(false)
-  rating Int @default(0)
-  profile Profile?
+  id                Int       @id @default(autoincrement())
+  email             String    @unique
+  name              String
+  role              Role      @default(CLIENT)
+  projects          Project[]
+  isIDVerified      Boolean   @default(false)
+  isPaymentVerified Boolean   @default(false)
+  rating            Int       @default(0)
+  profile           Profile?
 }
 
 model Profile {
-  id Int @id @default(autoincrement())
-  user User @relation(fields: [userID], references: [id])
-  userID Int @unique
-  bio String
+  id     Int    @id @default(autoincrement())
+  user   User   @relation(fields: [userID], references: [id])
+  userID Int    @unique
+  bio    String
 }
 
 model Project {
-  id Int @id @default(autoincrement())
-  client User @relation(fields: [clientID], references: [id])
-  clientID Int
+  id          Int          @id @default(autoincrement())
+  client      User         @relation(fields: [clientID], references: [id])
+  clientID    Int
   projectType ProjectType?
-  tasks Task[]
+  tasks       Task[]
+  invoices    Invoice[]
 }
 
 model Task {
-  id Int @id @default(autoincrement())
-  task Project @relation(fields: [projectID], references: [id])
-  projectID Int
-  startDate DateTime @default(now())
-  dueDate DateTime
+  id          Int      @id @default(autoincrement())
+  task        Project  @relation(fields: [projectID], references: [id])
+  projectID   Int
+  startDate   DateTime @default(now())
+  dueDate     DateTime
   taskPayment Float
+}
+
+model Invoice {
+  id        Int          @id @default(autoincrement())
+  createdAt DateTime     @default(now())
+  dueDate   DateTime
+  project   Project      @relation(fields: [serviceID], references: [id])
+  serviceID Int
+  amount    Float
+  state     InvoiceState
 }
 
 enum Role {
@@ -56,4 +67,10 @@ enum Role {
 enum ProjectType {
   ONE_TIME
   MILESTONES
+}
+
+enum InvoiceState {
+  PAID
+  PENDING
+  OVERDUE
 }
